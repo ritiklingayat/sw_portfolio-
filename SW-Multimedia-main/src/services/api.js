@@ -1,5 +1,5 @@
 // Spring Boot backend base URL (port 8082)
-const SPRING_BASE_URL = 'http://localhost:8082/sw';
+const SPRING_BASE_URL = 'https://sw-backend-8ovk.onrender.com';
 
 /**
  * Submit internship application — multipart/form-data
