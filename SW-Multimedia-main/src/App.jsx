@@ -15,6 +15,8 @@ export default function App() {
     setPage(nextPage);
     setMenuOpen(false);
     window.scrollTo(0, 0);
+
+    
   };
 
   const openCourse = (name) => {
