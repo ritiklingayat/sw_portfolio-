@@ -8,7 +8,7 @@ export default function App() {
   const [course, setCourse] = useState(null);
   const [article, setArticle] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-
+         
   const go = (nextPage) => {
     setCourse(null);
     setArticle(null);
