@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for Java Backend
+  postgres:
+    image: postgres:15-alpine
+    container_name: sw-postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-neondb}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sw-network
+
+  # MongoDB for Node.js Backend
+  mongo:
+    image: mongo:6.0-alpine
+    container_name: sw-mongo
+    environment:
+      MONGO_INITDB_DATABASE: sw_multimedia
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sw-network
+
+  # Java Backend Service
+  java-backend:
+    build:
+      context: .
+      dockerfile: sw_backend/Dockerfile
+    container_name: sw-java-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/neondb
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-postgres}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      SPRING_MAIL_PORT: ${MAIL_PORT:-587}
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
+      APP_ADMIN_EMAIL: ${APP_ADMIN_EMAIL}
+      SERVER_PORT: 8082
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - sw-network
+
+  # Node.js Backend Service
+  node-backend:
+    build:
+      context: ./SW-Multimedia-main
+      dockerfile: Dockerfile.backend
+    container_name: sw-node-backend
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/sw_multimedia
+      NODE_ENV: production
+    ports:
+      - "5000:5000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - sw-network
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./SW-Multimedia-main
+      dockerfile: Dockerfile.frontend
+    container_name: sw-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_URL: http://localhost:5000
+    depends_on:
+      - node-backend
+    networks:
+      - sw-network
+
+volumes:
+  postgres_data:
+  mongo_data:
+
+networks:
+  sw-network:
+    driver: bridge

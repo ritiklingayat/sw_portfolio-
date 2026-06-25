@@ -1,0 +1,16 @@
+# Node.js Backend Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY Backend/package.json .
+RUN npm install
+
+COPY Backend .
+
+EXPOSE 5000
+
+ENV PORT=5000
+ENV MONGO_URI=mongodb://mongo:27017/sw_multimedia
+
+CMD ["node", "server.js"]
