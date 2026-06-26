@@ -12,7 +12,15 @@ import tools.jackson.databind.annotation.JsonAppend;
 
 @RestController
 @RequestMapping("/sw")
-@CrossOrigin(origins = {"https://sw-portfolio-five.vercel.app", "http://localhost:5173"})
+@CrossOrigin(
+        origins = {
+                "https://sw-portfolio-five.vercel.app",
+                "http://localhost:5173",
+                "http://127.0.0.1:5173"
+        },
+        allowedHeaders = "*",
+        allowCredentials = "true"
+)
 public class SwController {
 
     @Autowired
