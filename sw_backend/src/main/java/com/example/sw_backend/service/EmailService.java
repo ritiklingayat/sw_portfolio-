@@ -1,4 +1,4 @@
-﻿package com.example.sw_backend.service;
+package com.example.sw_backend.service;
 
 import com.example.sw_backend.entity.Contact;
 import com.example.sw_backend.entity.Internship;
