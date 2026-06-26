@@ -22,16 +22,20 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Value("${spring.mail.username}")
+    private String mailFrom;
+
     @Value("${app.admin.email}")
     private String adminEmail;
 
     @Async
     public void sendEmailToAdmin(Internship saveIntern, MultipartFile file) {
-        logger.info("Sending internship notification email for {}", saveIntern.getEmail());
+        logger.info("Sending internship notification email from {} to {}", mailFrom, adminEmail);
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
+            helper.setFrom(mailFrom);
             helper.setTo(adminEmail);
             helper.setSubject("New Intern Registration");
             helper.setText(
@@ -62,6 +66,7 @@ public class EmailService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
 
+            helper.setFrom(mailFrom);
             helper.setTo(adminEmail);
             helper.setSubject("New Contact Form Submission");
 

@@ -8,7 +8,6 @@ import com.example.sw_backend.service.IntershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import tools.jackson.databind.annotation.JsonAppend;
 
 @RestController
 @RequestMapping("/sw")
