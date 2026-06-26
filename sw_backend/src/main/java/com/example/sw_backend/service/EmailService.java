@@ -3,6 +3,8 @@ package com.example.sw_backend.service;
 import com.example.sw_backend.entity.Contact;
 import com.example.sw_backend.entity.Internship;
 import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -15,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class EmailService {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
+
     @Autowired
     private JavaMailSender mailSender;
 
@@ -23,6 +27,7 @@ public class EmailService {
 
     @Async
     public void sendEmailToAdmin(Internship saveIntern, MultipartFile file) {
+        logger.info("Sending internship notification email for {}", saveIntern.getEmail());
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -34,8 +39,8 @@ public class EmailService {
                             + "Name : " + saveIntern.getName() + "\n"
                             + "Email : " + saveIntern.getEmail() + "\n"
                             + "Number : " + saveIntern.getNumber() + "\n"
-                            + "Cource : " + saveIntern.getCourse() + "\n"
-                            + "education_detais : " + saveIntern.getEducation_background());
+                            + "Course : " + saveIntern.getCourse() + "\n"
+                            + "Education: " + saveIntern.getEducation_background());
 
             if (file != null && !file.isEmpty()) {
                 helper.addAttachment(
@@ -44,13 +49,15 @@ public class EmailService {
                 );
             }
             mailSender.send(message);
+            logger.info("Internship email sent successfully to {}", adminEmail);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to send internship email", e);
         }
     }
 
     @Async
     public void sendContactEmail(Contact savedContact) {
+        logger.info("Sending contact notification email for {}", savedContact.getEmail());
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -68,9 +75,10 @@ public class EmailService {
             );
 
             mailSender.send(message);
+            logger.info("Contact email sent successfully to {}", adminEmail);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to send contact email", e);
         }
     }
 }
