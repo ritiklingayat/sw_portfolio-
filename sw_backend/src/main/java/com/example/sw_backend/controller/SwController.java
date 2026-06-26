@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/sw")
 @CrossOrigin(
-        allowedOriginPatterns = {
+        origins = {
                 "https://sw-portfolio-five.vercel.app",
                 "http://localhost:5173",
                 "http://127.0.0.1:5173"
