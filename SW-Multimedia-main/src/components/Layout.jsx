@@ -100,7 +100,13 @@ export function InstagramFloat() {
 
 export function WhatsApp() {
   return (
-    <a className="float" href="#contact" aria-label="Open WhatsApp contact">
+    <a
+      className="float"
+      href="https://wa.me/919112166105?text=Hello%20SW%20Multimedia!%20I%20want%20to%20chat%20about%20your%20courses."
+      target="_blank"
+      rel="noreferrer noopener"
+      aria-label="Open WhatsApp chat"
+    >
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siWhatsapp.path} /></svg>
     </a>
   );
