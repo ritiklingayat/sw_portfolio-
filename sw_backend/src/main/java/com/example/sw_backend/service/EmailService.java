@@ -1,60 +1,46 @@
-package com.example.sw_backend.service;
+﻿package com.example.sw_backend.service;
 
 import com.example.sw_backend.entity.Contact;
 import com.example.sw_backend.entity.Internship;
+import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class EmailService {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
-    @Value("${brevo.api.key}")
-    private String brevoApiKey;
+    @Autowired
+    private JavaMailSender mailSender;
 
-    @Value("${brevo.sender.email}")
-    private String brevoSenderEmail;
-
-    @Value("${brevo.sender.name}")
-    private String brevoSenderName;
+    @Value("${spring.mail.username}")
+    private String senderEmail;
 
     @Value("${app.admin.email}")
     private String adminEmail;
 
     private void sendEmail(String subject, String textContent) {
         try {
-            String json = "{"
-                    + "\"sender\":{\"name\":\"" + brevoSenderName + "\",\"email\":\"" + brevoSenderEmail + "\"},"
-                    + "\"to\":[{\"email\":\"" + adminEmail + "\"}],"
-                    + "\"subject\":\"" + subject + "\","
-                    + "\"textContent\":\"" + textContent.replace("\n", "\\n").replace("\"", "\\\"") + "\""
-                    + "}";
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.brevo.com/v3/smtp/email"))
-                    .header("accept", "application/json")
-                    .header("api-key", brevoApiKey)
-                    .header("content-type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
-
-            HttpResponse<String> response = HttpClient.newHttpClient()
-                    .send(request, HttpResponse.BodyHandlers.ofString());
-
-            logger.info("Brevo API response: {} {}", response.statusCode(), response.body());
-
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, StandardCharsets.UTF_8.name());
+            helper.setFrom(senderEmail);
+            helper.setTo(adminEmail);
+            helper.setSubject(subject);
+            helper.setText(textContent, false);
+            mailSender.send(mimeMessage);
+            logger.info("Email sent successfully to {}", adminEmail);
         } catch (Exception e) {
-            logger.error("Failed to send email via Brevo API", e);
+            logger.error("Failed to send email via SMTP", e);
         }
     }
 
