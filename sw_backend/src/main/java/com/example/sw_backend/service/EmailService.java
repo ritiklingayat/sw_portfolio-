@@ -22,13 +22,19 @@ public class EmailService {
     @Value("${brevo.api.key}")
     private String brevoApiKey;
 
+    @Value("${brevo.sender.email}")
+    private String brevoSenderEmail;
+
+    @Value("${brevo.sender.name}")
+    private String brevoSenderName;
+
     @Value("${app.admin.email}")
     private String adminEmail;
 
     private void sendEmail(String subject, String textContent) {
         try {
             String json = "{"
-                    + "\"sender\":{\"name\":\"SW Multimedia\",\"email\":\"swmultimedia2023@gmail.com\"},"
+                    + "\"sender\":{\"name\":\"" + brevoSenderName + "\",\"email\":\"" + brevoSenderEmail + "\"},"
                     + "\"to\":[{\"email\":\"" + adminEmail + "\"}],"
                     + "\"subject\":\"" + subject + "\","
                     + "\"textContent\":\"" + textContent.replace("\n", "\\n").replace("\"", "\\\"") + "\""
