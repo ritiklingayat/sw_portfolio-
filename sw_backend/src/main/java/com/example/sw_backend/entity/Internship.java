@@ -21,6 +21,8 @@ public class Internship {
     private String course;
 
     private String education_background ;
+    
+    private String resumeFilename;
 
     public Internship()
     {}
@@ -32,6 +34,14 @@ public class Internship {
         this.number = number;
         this.course = course;
         this.education_background = education_background;
+    }
+
+    public String getResumeFilename() {
+        return resumeFilename;
+    }
+
+    public void setResumeFilename(String resumeFilename) {
+        this.resumeFilename = resumeFilename;
     }
 
     public Long getId() {
