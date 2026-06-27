@@ -31,7 +31,8 @@ public class CloudinaryService {
             file.getBytes(),
             ObjectUtils.asMap(
                 "resource_type", "raw",
-                "folder", "resumes"
+                "folder", "resumes",
+                "flags", "attachment:false"  
             )
         );
         return (String) result.get("secure_url");
