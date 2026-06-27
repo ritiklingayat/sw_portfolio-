@@ -77,6 +77,6 @@ public class EmailService {
                 + "Number: " + savedContact.getNumber() + "\n"
                 + "Course: " + savedContact.getCourse() + "\n"
                 + "Education: " + savedContact.getEducation_background();
-        sendEmail("New Contact Form Submission", content);
+        sendEmail("New Contact Form Submission", content,null);
     }
 }
