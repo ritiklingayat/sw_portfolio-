@@ -30,7 +30,7 @@ public class CloudinaryService {
         Map result = cloudinary.uploader().upload(
             file.getBytes(),
             ObjectUtils.asMap(
-                "resource_type", "raw",
+                "resource_type", "image",
                 "folder", "resumes",
                 "flags", "attachment:false"  
             )
