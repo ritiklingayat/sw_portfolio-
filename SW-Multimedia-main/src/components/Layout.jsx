@@ -92,7 +92,7 @@ export function Footer({ go }) {
 
 export function InstagramFloat() {
   return (
-    <a className="float instagramFloat" href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Open Instagram">
+    <a className="float instagramFloat" href="https://www.instagram.com/sw__multimedia/" target="_blank" rel="noreferrer" aria-label="Open Instagram">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siInstagram.path} /></svg>
     </a>
   );
