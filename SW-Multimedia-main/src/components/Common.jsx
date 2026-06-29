@@ -18,7 +18,7 @@ export function FeatureIcon({ index }) {
 
 // type: 'internship' | 'contact' (default: 'contact')
 // resumeFile: File object passed from InternshipsPage when type='internship'
-export function Form({ button, dark = false, type = 'contact', resumeFile = null }) {
+export function Form({ button, dark = false, type = 'contact', resumeFile = null, beforeSubmit = null }) {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -65,6 +65,7 @@ export function Form({ button, dark = false, type = 'contact', resumeFile = null
         {categories.map((category) => <option key={category.title} value={category.title}>{category.title}</option>)}
       </select>
       <textarea name="message" value={formData.message} onChange={updateField} aria-label="Educational background or career goals" placeholder="Tell us about your educational background or career goals" />
+      {beforeSubmit}
       <button disabled={status === 'submitting'}>{status === 'submitting' ? 'Submitting...' : button}</button>
       {status === 'success' && <p className="formStatus success">Thank you. Your enquiry has been submitted successfully.</p>}
       {status === 'error' && <p className="formStatus error">Unable to submit right now. Please try again or contact us directly.</p>}

@@ -34,14 +34,25 @@ export default function InternshipsPage() {
       </div>
       <div className="upload" onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); handleResume(event.dataTransfer.files?.[0]); }}>
         <input ref={fileInputRef} type="file" accept=".pdf,application/pdf" className="srOnly" onChange={(event) => handleResume(event.target.files?.[0])} />
-        <button type="button" className="uploadBtn" onClick={() => fileInputRef.current?.click()} aria-label="Upload resume PDF">
-          <Upload size={42} />
-        </button>
         <h2>Submit Onboarding Request</h2>
-        <p>Drag and drop your engineering resume here (PDF only, max 5MB)</p>
-        {resume && <p className="uploadFileName">Selected: {resume.name}</p>}
-        {uploadError && <p className="uploadError">{uploadError}</p>}
-        <Form button="Submit Internship Application" type="internship" resumeFile={resume} />
+        <p>Complete the details below and upload your resume before submitting.</p>
+        <Form
+          button="Submit Internship Application"
+          type="internship"
+          resumeFile={resume}
+          beforeSubmit={(
+            <div className="resumeUploadField">
+              <p className="resumeUploadTitle">Upload the resume here</p>
+              <p>Drag and drop your engineering resume here (PDF only, max 5MB)</p>
+              <button type="button" className="uploadBtn" onClick={() => fileInputRef.current?.click()} aria-label="Upload resume PDF">
+                <Upload size={32} />
+                <span>Upload Resume</span>
+              </button>
+              {resume && <p className="uploadFileName">Selected: {resume.name}</p>}
+              {uploadError && <p className="uploadError">{uploadError}</p>}
+            </div>
+          )}
+        />
       </div>
     </section>
   );

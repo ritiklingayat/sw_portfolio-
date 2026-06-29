@@ -47,13 +47,6 @@ export function Header({ page, go, open, setOpen }) {
 export function Footer({ go }) {
   return (
     <footer className="footer">
-      <div className="footerCta">
-        <div>
-          <h2>READY TO START YOUR IT CAREER?</h2>
-          <p>Join SW Multimedia today and take the first step towards a successful technology career.</p>
-        </div>
-        <button onClick={() => go('Contact')}>ENQUIRE NOW</button>
-      </div>
       <div className="footerGrid">
         <div>
           <h3>SW MULTIMEDIA</h3>

@@ -29,6 +29,7 @@
 .footer {
   background: #071426;
   color: #cbd5e1;
+  display: block;
   position: relative;
   padding: 0 36px 84px;
   border-top: 4px solid #0059FF;
@@ -43,6 +44,7 @@
   background: #071426;
   color: #cbd5e1;
   border-top: 4px solid #0059FF;
+  width: 100%;
 }
 
 .footerCta h2,
@@ -71,6 +73,7 @@
   display: grid;
   grid-template-columns: 1.5fr 0.8fr 1fr 1.2fr;
   gap: 48px;
+  padding-top: 48px;
   padding-bottom: 48px;
   align-items: start;
 }
@@ -1352,16 +1355,38 @@
 }
 
 .uploadBtn {
-  display: inline-grid;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   place-items: center;
-  width: 72px;
-  height: 72px;
+  min-height: 54px;
   margin-bottom: 12px;
+  padding: 12px 18px;
   border: 1px solid var(--line);
   border-radius: 18px;
   background: #eef5ff;
   color: var(--blue);
+  font-weight: 800;
   transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.resumeUploadField {
+  padding: 16px;
+  border: 1px dashed rgba(0, 89, 255, .35);
+  border-radius: 16px;
+  background: #f8fbff;
+}
+
+.resumeUploadField p {
+  margin: 0 0 10px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.resumeUploadTitle {
+  color: #111827 !important;
+  font-weight: 900;
 }
 
 .uploadBtn:hover {

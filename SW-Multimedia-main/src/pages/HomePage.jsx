@@ -159,6 +159,18 @@ function LeadForm() {
   );
 }
 
+function CareerCta({ go }) {
+  return (
+    <section className="footerCta homeCareerCta">
+      <div>
+        <h2>READY TO START YOUR IT CAREER?</h2>
+        <p>Join SW Multimedia today and take the first step towards a successful technology career.</p>
+      </div>
+      <button onClick={() => go('Contact')}>ENQUIRE NOW</button>
+    </section>
+  );
+}
+
 export default function HomePage({ go, openCourse }) {
   return (
     <>
@@ -169,6 +181,7 @@ export default function HomePage({ go, openCourse }) {
       <Journey />
       <Partners />
       <Testimonials />
+      <CareerCta go={go} />
       <LeadForm />
     </>
   );
