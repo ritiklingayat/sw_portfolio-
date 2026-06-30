@@ -2,6 +2,13 @@ import { Mail, MapPin, Phone } from 'lucide-react';
 import { Form, Title } from '../components/Common';
 
 export default function ContactPage() {
+  const whatsappNumber = '919112166105'; // Phone number without + sign
+  
+  const handleWhatsAppClick = () => {
+    const whatsappUrl = `https://wa.me/${whatsappNumber}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <section className="page split" id="contact">
       <div>
@@ -14,7 +21,7 @@ export default function ContactPage() {
         </p>
         <p><Phone /> +91 9112166105<br /><Phone /> +91 9011359616</p>
         <p><Mail /> swmultimedia2023@gmail.com</p>
-        <button className="whats">Initialize Live Conversation via WhatsApp</button>
+        <button className="whats" onClick={handleWhatsAppClick}>Initialize Live Conversation via WhatsApp</button>
       </div>
       <Form button="Transmit Secure Help Request" type="contact" />
     </section>
