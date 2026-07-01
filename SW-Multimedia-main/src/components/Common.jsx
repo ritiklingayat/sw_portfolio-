@@ -5,6 +5,7 @@ import {
 import { useState } from 'react';
 import { categories } from '../data/content';
 import { submitInternship, submitContact } from '../services/api';
+import { sendContactEmail, sendInternshipEmail } from '../services/email';
 
 export function Title({ small, title }) {
   return <div className="title">{small && <span>{small}</span>}<h1>{title}</h1></div>;
@@ -18,7 +19,7 @@ export function FeatureIcon({ index }) {
 
 // type: 'internship' | 'contact' (default: 'contact')
 // resumeFile: File object passed from InternshipsPage when type='internship'
-export function Form({ button, dark = false, type = 'contact', resumeFile = null, beforeSubmit = null }) {
+export function Form({ button, dark = false, type = 'contact', resumeFile = null, beforeSubmit = null, onSuccess = null }) {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -41,14 +42,33 @@ export function Form({ button, dark = false, type = 'contact', resumeFile = null
 
     try {
       if (type === 'internship') {
-        // POST /sw/internship — multipart/form-data (includes optional resume PDF)
-        await submitInternship({ ...formData, file: resumeFile });
+        const result = await submitInternship({ ...formData, file: resumeFile });
+
+        await sendInternshipEmail({
+          name: formData.name,
+          email: formData.email,
+          number: formData.phone,
+          course: formData.course,
+          education_background: formData.message || '',
+          resume_url: result?.resumeFilename || '',
+        });
       } else {
-        // POST /sw/contact — JSON body
         await submitContact(formData);
+
+        await sendContactEmail({
+          name: formData.name,
+          email: formData.email,
+          number: formData.phone,
+          course: formData.course,
+          education_background: formData.message || '',
+        });
       }
+
       setStatus('success');
       setFormData({ name: '', phone: '', email: '', course: '', message: '' });
+      if (typeof onSuccess === 'function') {
+        onSuccess();
+      }
     } catch (error) {
       console.error(error);
       setStatus('error');
