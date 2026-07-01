@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import { ArrowRight, ChevronRight, Cloud, Code2, LayoutDashboard, PlayCircle, Sparkles } from 'lucide-react';
+import { ArrowRight, ChevronRight, PlayCircle, Sparkles } from 'lucide-react';
 import { Form, Stats, Title } from '../components/Common';
 import CourseVisual from '../components/CourseVisual';
+import GridlineAnimation from '../components/GridlineAnimation';
 import PartnerLogo from '../components/PartnerLogo';
 import { features, journeySteps, partners, popular } from '../data/content';
+import heroVideo from '../../images/3d.mp4';
 
 function Hero({ go }) {
   return (
     <section className="hero">
+      <GridlineAnimation />
       <div className="heroText">
         <span className="badge"><Sparkles size={16} /> Premium Ed-Tech Platform</span>
         <h1>Transform Your Career With Industry-Oriented IT Training</h1>
@@ -17,12 +20,17 @@ function Hero({ go }) {
           <button className="secondary" onClick={() => go('Contact')}>Book Free Counselling</button>
         </div>
       </div>
-      <div className="heroArt">
-        <div className="orb" />
-        <Code2 />
-        <Cloud />
-        <LayoutDashboard />
-        <div className="glass"><b>Live Project Lab</b><span>MERN - DevOps - AI - Cloud</span></div>
+      <div className="heroArt videoHero">
+        <GridlineAnimation variant="dark" />
+        <video
+          src={heroVideo}
+          className="heroVideo"
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-label="SW Multimedia 3D course showcase"
+        />
       </div>
     </section>
   );
@@ -83,37 +91,63 @@ function Journey() {
   const [active, setActive] = useState(null);
   const [hovered, setHovered] = useState(null);
   const previewIndex = active ?? hovered;
+  const activeStep = previewIndex !== null ? journeySteps[previewIndex] : null;
+  const hubTitle = activeStep ? activeStep.title : 'Roadmap';
+  const hubText = activeStep ? activeStep.text : 'Hover a step to pause and preview each phase.';
 
   return (
     <section className="section dark journeyShowcase">
+      <GridlineAnimation variant="dark" />
       <Title small="Student Journey" title="From enrolment to placement readiness" />
-      <div className="steps interactive">
-        {journeySteps.map((step, index) => (
-          <div
-            className="step"
-            key={step.title}
-            onMouseEnter={() => setHovered(index)}
-            onMouseLeave={() => setHovered(null)}
-            onClick={() => setActive(index)}
-          >
-            <div className="stepIcon" style={{ backgroundImage: `url(${step.image})`, backgroundPosition: step.imagePosition || 'center' }} />
-            <b>{String(index + 1).padStart(2, '0')}</b>
-            <span>{step.title}</span>
-            <small>{step.tag}</small>
-            <p>{step.text}</p>
+      <div className="ferrisJourney" aria-label="Animated student journey ferris wheel">
+        <div className="ferrisWheel" style={{ '--count': journeySteps.length }}>
+          <div className="ferrisRing">
+            {journeySteps.map((step, index) => (
+              <button
+                className="ferrisStep"
+                key={step.title}
+                style={{
+                  '--angle': `${(360 / journeySteps.length) * index}deg`,
+                  '--cabin-start': `${(-360 / journeySteps.length) * index}deg`,
+                  '--cabin-end': `${(-360 / journeySteps.length) * index - 360}deg`,
+                }}
+                onMouseEnter={() => setHovered(index)}
+                onMouseLeave={() => setHovered(null)}
+                onFocus={() => setHovered(index)}
+                onBlur={() => setHovered(null)}
+                onClick={() => setActive(index)}
+              >
+                <span className="ferrisCabin">
+                  <span
+                    className="ferrisImage"
+                    style={{ backgroundImage: `url(${step.image})`, backgroundPosition: step.imagePosition || 'center' }}
+                  />
+                  <span className="ferrisCopy">
+                    <b>{String(index + 1).padStart(2, '0')}</b>
+                    <span>{step.title}</span>
+                    <small>{step.tag}</small>
+                  </span>
+                </span>
+              </button>
+            ))}
           </div>
-        ))}
+          <div className="ferrisHub">
+            <span>Carrer Map</span>
+            <strong className={activeStep ? 'is-active' : ''}>{hubTitle}</strong>
+            <p className={activeStep ? 'is-active' : ''}>{hubText}</p>
+          </div>
+        </div>
       </div>
 
-      {previewIndex !== null && (
-        <div className={`journeyModal ${active === null ? 'hoverModal' : ''}`} role="dialog" onClick={() => setActive(null)}>
+      {active !== null && (
+        <div className="journeyModal" role="dialog" onClick={() => setActive(null)}>
           <div className="journeyModalContent" onClick={(event) => event.stopPropagation()}>
             <div className="journeyModalIcon">
-              <img src={journeySteps[previewIndex].image} alt={`${journeySteps[previewIndex].title} student journey`} className="journeyImageLarge" />
+              <img src={journeySteps[active].image} alt={`${journeySteps[active].title} student journey`} className="journeyImageLarge" />
             </div>
-            <h3>{journeySteps[previewIndex].title}</h3>
-            <p>{journeySteps[previewIndex].text}</p>
-            {active !== null && <button className="cta" onClick={() => setActive(null)}>Close</button>}
+            <h3>{journeySteps[active].title}</h3>
+            <p>{journeySteps[active].text}</p>
+            <button className="cta" onClick={() => setActive(null)}>Close</button>
           </div>
         </div>
       )}
@@ -137,7 +171,15 @@ function Testimonials() {
   return (
     <section className="section soft">
       <div className="testimonial">
-        <div className="video"><PlayCircle size={64} /><span>Video Testimonial</span></div>
+        <video
+          src={heroVideo}
+          className="testimonialVideo"
+          autoPlay
+          loop
+          muted
+          playsInline
+          aria-label="SW Multimedia video testimonial"
+        />
         <div>
           <span className="badge">Student Success</span>
           <h2>"The production-level MERN stack training transformed my approach to building software."</h2>
