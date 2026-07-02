@@ -9,8 +9,17 @@ export default function InternshipsPage() {
 
   const handleResume = (file) => {
     if (!file) return;
-    if (file.type !== 'application/pdf') {
-      setUploadError('Please upload a PDF file only.');
+
+    const fileName = (file.name || '').toLowerCase();
+    const allowedMimeTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+    const isAllowedFile = allowedMimeTypes.includes(file.type) || fileName.endsWith('.pdf') || fileName.endsWith('.doc') || fileName.endsWith('.docx');
+
+    if (!isAllowedFile) {
+      setUploadError('Please upload a PDF or Word file only.');
       setResume(null);
       return;
     }
@@ -33,7 +42,7 @@ export default function InternshipsPage() {
         ))}
       </div>
       <div className="upload" onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); handleResume(event.dataTransfer.files?.[0]); }}>
-        <input ref={fileInputRef} type="file" accept=".pdf,application/pdf" className="srOnly" onChange={(event) => handleResume(event.target.files?.[0])} />
+        <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="srOnly" onChange={(event) => handleResume(event.target.files?.[0])} />
         <h2>Submit Onboarding Request</h2>
         <p>Complete the details below and upload your resume before submitting.</p>
         <Form
@@ -43,7 +52,7 @@ export default function InternshipsPage() {
           beforeSubmit={(
             <div className="resumeUploadField">
               <p className="resumeUploadTitle">Upload the resume here</p>
-              <p>Drag and drop your engineering resume here (PDF only, max 5MB)</p>
+              <p>Drag and drop your engineering resume here (PDF or Word only, max 5MB)</p>
               <button type="button" className="uploadBtn" onClick={() => fileInputRef.current?.click()} aria-label="Upload resume PDF">
                 <Upload size={32} />
                 <span>Upload Resume</span>

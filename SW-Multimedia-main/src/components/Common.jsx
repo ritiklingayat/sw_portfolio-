@@ -28,16 +28,86 @@ export function Form({ button, dark = false, type = 'contact', resumeFile = null
     message: '',
   });
   const [status, setStatus] = useState('idle');
+  const [validationError, setValidationError] = useState('');
 
   const updateField = (event) => {
-    setFormData((current) => ({
-      ...current,
-      [event.target.name]: event.target.value,
-    }));
+    const { name, value } = event.target;
+
+    if (name === 'phone') {
+      const digitsOnly = value.replace(/\D/g, '').slice(0, 10);
+      setFormData((current) => ({
+        ...current,
+        phone: digitsOnly,
+      }));
+    } else {
+      setFormData((current) => ({
+        ...current,
+        [name]: value,
+      }));
+    }
+
+    if (validationError) {
+      setValidationError('');
+    }
+    if (status !== 'idle') {
+      setStatus('idle');
+    }
+  };
+
+  const validateForm = () => {
+    const trimmedName = formData.name.trim();
+    const trimmedPhone = formData.phone.trim();
+    const trimmedEmail = formData.email.trim();
+    const trimmedCourse = formData.course.trim();
+
+    if (!trimmedName) {
+      return 'Please enter your full name.';
+    }
+
+    if (!/^\d{10}$/.test(trimmedPhone)) {
+      return 'Please enter a valid 10-digit phone number.';
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      return 'Please enter a valid email address.';
+    }
+
+    if (!trimmedCourse) {
+      return 'Please select a course.';
+    }
+
+    if (type === 'internship') {
+      if (!resumeFile) {
+        return 'Please upload your resume before submitting.';
+      }
+
+      const fileName = (resumeFile.name || '').toLowerCase();
+      const allowedMimeTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      ];
+      const isAllowedFile = allowedMimeTypes.includes(resumeFile.type) || fileName.endsWith('.pdf') || fileName.endsWith('.doc') || fileName.endsWith('.docx');
+
+      if (!isAllowedFile) {
+        return 'Please upload a PDF or Word file only.';
+      }
+    }
+
+    return '';
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const validationMessage = validateForm();
+    if (validationMessage) {
+      setValidationError(validationMessage);
+      setStatus('idle');
+      return;
+    }
+
+    setValidationError('');
     setStatus('submitting');
 
     try {
@@ -78,7 +148,7 @@ export function Form({ button, dark = false, type = 'contact', resumeFile = null
   return (
     <form className={dark ? 'form darkForm' : 'form'} onSubmit={handleSubmit}>
       <input name="name" value={formData.name} onChange={updateField} aria-label="Full name" placeholder="Enter your full name" required />
-      <input name="phone" value={formData.phone} onChange={updateField} aria-label="Mobile number" placeholder="Enter your mobile number" required />
+      <input name="phone" type="tel" inputMode="numeric" maxLength={10} value={formData.phone} onChange={updateField} aria-label="Mobile number" placeholder="Enter your 10-digit mobile number" required />
       <input name="email" type="email" value={formData.email} onChange={updateField} aria-label="Email address" placeholder="Enter your email address" required />
       <select name="course" value={formData.course} onChange={updateField} aria-label="Course target domain" required>
         <option value="" disabled>Select Course Target Domain</option>
@@ -86,6 +156,7 @@ export function Form({ button, dark = false, type = 'contact', resumeFile = null
       </select>
       <textarea name="message" value={formData.message} onChange={updateField} aria-label="Educational background or career goals" placeholder="Tell us about your educational background or career goals" />
       {beforeSubmit}
+      {validationError && <p className="formStatus error">{validationError}</p>}
       <button disabled={status === 'submitting'}>{status === 'submitting' ? 'Submitting...' : button}</button>
       {status === 'success' && <p className="formStatus success">Thank you. Your enquiry has been submitted successfully.</p>}
       {status === 'error' && <p className="formStatus error">Unable to submit right now. Please try again or contact us directly.</p>}

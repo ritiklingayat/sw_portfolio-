@@ -5,8 +5,10 @@ import com.example.sw_backend.repository.ContactRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ContactService {
@@ -21,6 +23,7 @@ public class ContactService {
 
     @Transactional
     public Contact saveContact(Contact contact) {
+        validateContactDetails(contact.getEmail(), contact.getNumber());
         logger.info("Saving contact submission: name={}, email={}, phone={}", contact.getName(), contact.getEmail(), contact.getNumber());
         Contact savedContact = contactRepository.save(contact);
         try {
@@ -29,5 +32,15 @@ public class ContactService {
             logger.error("Contact saved but email notification failed", e);
         }
         return savedContact;
+    }
+
+    private void validateContactDetails(String email, String phone) {
+        if (email == null || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please enter a valid email address.");
+        }
+
+        if (phone == null || !phone.matches("^\\d{10}$")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please enter a valid 10-digit phone number.");
+        }
     }
 }
