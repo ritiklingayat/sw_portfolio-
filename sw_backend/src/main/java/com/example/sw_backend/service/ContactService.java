@@ -18,19 +18,11 @@ public class ContactService {
     @Autowired
     private ContactRepository contactRepository;
 
-    //@Autowired
-   // private EmailService emailService;
-
     @Transactional
     public Contact saveContact(Contact contact) {
         validateContactDetails(contact.getEmail(), contact.getNumber());
         logger.info("Saving contact submission: name={}, email={}, phone={}", contact.getName(), contact.getEmail(), contact.getNumber());
         Contact savedContact = contactRepository.save(contact);
-        // try {
-        //     emailService.sendContactEmail(savedContact);
-        // } catch (Exception e) {
-        //     logger.error("Contact saved but email notification failed", e);
-        // }
         return savedContact;
     }
 

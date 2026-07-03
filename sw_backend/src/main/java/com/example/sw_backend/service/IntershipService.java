@@ -14,9 +14,6 @@ public class IntershipService {
     @Autowired
     private InternshipRepository internshipRepository;
 
-    //@Autowired
-   // private EmailService emailService;
-
     @Autowired
     private CloudinaryService cloudinaryService; // ✅ your custom service, not Cloudinary class
 
@@ -36,7 +33,6 @@ public class IntershipService {
             }
         }
 
-        //emailService.sendEmailToAdmin(savedIntern, file);
         return savedIntern;
     }
 
