@@ -1,12 +1,11 @@
 import emailjs from '@emailjs/browser';
 
 
-emailjs.init(PUBLIC_KEY);
-
+const publicKey = import.meta.env.VITE_PUBLIC_KEY;
+emailjs.init(publicKey);
 export async function sendContactEmail(templateParams) {
   const serviceID = import.meta.env.VITE_SERVICE_ID;
   const contactTemplateID = import.meta.env.VITE_CONTACT_TEMPLATE_ID;
-  const publicKey = import.meta.env.VITE_PUBLIC_KEY;
   return emailjs.send(serviceID, contactTemplateID, templateParams, publicKey);
 }
 
